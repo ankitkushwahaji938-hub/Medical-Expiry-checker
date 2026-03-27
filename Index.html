@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medicine Expiry Date Checker – Is My Medicine Expired? | AnkitStudyPoint</title>
+  <meta name="description" content="Free Medicine Expiry Date Checker. Check if your medicine is expired, calculate days remaining, and find expiry from manufacturing date + shelf life. Free pharmacy tool by AnkitStudyPoint." />
+  <meta name="keywords" content="medicine expiry date checker, drug expiry calculator, is medicine expired, manufacturing date calculator, D.Pharmacy tool, AnkitStudyPoint" />
+  <meta name="author" content="AnkitStudyPoint" />
+  <meta name="robots" content="index, follow" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Medicine Expiry Date Checker",
+    "description": "Check if a medicine is expired and calculate days remaining from expiry date.",
+    "url": "https://ankitstudypoint.blogspot.com/",
+    "applicationCategory": "HealthApplication",
+    "author": { "@type": "Organization", "name": "AnkitStudyPoint", "url": "https://ankitstudypoint.blogspot.com/" }
+  }
+  </script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+    :root {
+      --bg: #0a0f1e;
+      --card: #161f35;
+      --border: #1e2d4a;
+      --accent: #06b6d4;
+      --accent2: #6366f1;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --danger: #f43f5e;
+      --warning: #f59e0b;
+      --success: #10b981;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 15% 25%, rgba(6,182,212,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 85% 75%, rgba(99,102,241,0.07) 0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+
+    .wrapper { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; padding: 32px 16px 60px; }
+
+    .brand-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(6,182,212,0.08); border: 1px solid rgba(6,182,212,0.2);
+      border-radius: 999px; padding: 4px 14px; font-size: 11px;
+      letter-spacing: 2px; text-transform: uppercase; color: var(--accent);
+      margin-bottom: 16px; font-family: 'Syne', sans-serif; font-weight: 600;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif; font-size: clamp(1.7rem, 5vw, 2.5rem);
+      font-weight: 800; line-height: 1.15;
+      background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; margin-bottom: 10px;
+    }
+
+    h2 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; margin-bottom: 8px; }
+    .subtitle { color: var(--muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 28px; }
+
+    /* TABS */
+    .tab-row { display: flex; gap: 8px; margin-bottom: 24px; }
+
+    .tab-btn {
+      flex: 1; padding: 12px; background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; cursor: pointer; font-family: 'Syne', sans-serif;
+      font-size: 0.82rem; font-weight: 600; color: var(--muted); transition: all 0.2s; text-align: center;
+    }
+
+    .tab-btn.active { background: rgba(6,182,212,0.1); border-color: var(--accent); color: var(--accent); }
+    .tab-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* PANEL */
+    .calc-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 24px; margin-bottom: 20px; }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .input-group { margin-bottom: 18px; }
+    .input-group label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 7px; font-family: 'Syne', sans-serif; font-weight: 600; }
+
+    .input-row { display: flex; gap: 8px; }
+    .input-row input[type="date"],
+    .input-row input[type="number"],
+    .input-row select {
+      flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+      padding: 13px 14px; color: var(--text); font-size: 0.95rem;
+      font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s;
+      color-scheme: dark;
+    }
+
+    .input-row input:focus, .input-row select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(6,182,212,0.1); }
+
+    .unit-badge { background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.2); border-radius: 10px; padding: 13px 12px; font-size: 0.78rem; color: var(--accent); font-family: 'Syne', sans-serif; font-weight: 700; white-space: nowrap; display: flex; align-items: center; }
+
+    .error-box { display: none; background: rgba(244,63,94,0.1); border: 1px solid rgba(244,63,94,0.3); border-radius: 12px; padding: 12px; color: var(--danger); font-size: 0.85rem; text-align: center; margin-bottom: 12px; }
+
+    .calc-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; border-radius: 12px; color: #fff; font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 1px; cursor: pointer; text-transform: uppercase; transition: all 0.3s; }
+    .calc-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(6,182,212,0.3); }
+
+    /* RESULT */
+    #result { display: none; }
+
+    .status-card {
+      border-radius: 20px; padding: 28px; text-align: center;
+      animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .status-card.expired { background: linear-gradient(135deg, rgba(244,63,94,0.1), rgba(244,63,94,0.05)); border: 2px solid rgba(244,63,94,0.4); }
+    .status-card.safe { background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(16,185,129,0.05)); border: 2px solid rgba(16,185,129,0.4); }
+    .status-card.warning { background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(245,158,11,0.05)); border: 2px solid rgba(245,158,11,0.4); }
+
+    @keyframes popIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+    .status-emoji { font-size: 3rem; margin-bottom: 10px; display: block; }
+    .status-text { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; margin-bottom: 8px; }
+    .status-card.expired .status-text { color: var(--danger); }
+    .status-card.safe .status-text { color: var(--success); }
+    .status-card.warning .status-text { color: var(--warning); }
+
+    .status-days { font-size: 0.9rem; color: var(--muted); margin-bottom: 16px; }
+    .status-days strong { color: var(--text); font-size: 1rem; }
+
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: left; }
+    .info-item { background: rgba(255,255,255,0.03); border-radius: 10px; padding: 12px; }
+    .info-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); font-family: 'Syne', sans-serif; margin-bottom: 4px; }
+    .info-value { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+
+    .advice-box { margin-top: 14px; padding: 12px 16px; border-radius: 12px; font-size: 0.82rem; line-height: 1.6; text-align: left; }
+    .advice-box.expired { background: rgba(244,63,94,0.08); border: 1px solid rgba(244,63,94,0.2); color: var(--danger); }
+    .advice-box.safe { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); color: var(--success); }
+    .advice-box.warning { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); color: var(--warning); }
+
+    .reset-btn { margin-top: 14px; padding: 10px 24px; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-family: 'Syne', sans-serif; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; }
+    .reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* LINKS */
+    .internal-links { margin-top: 40px; padding-top: 28px; border-top: 1px solid var(--border); }
+    .links-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; margin-top: 12px; }
+    .link-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; text-decoration: none; color: var(--text); font-size: 0.82rem; font-weight: 500; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+    .link-card:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+    /* SEO */
+    .seo-text { margin-top: 40px; padding: 24px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; }
+    .seo-text h3 { font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 600; color: var(--accent); margin: 14px 0 6px; }
+    .seo-text p { font-size: 0.82rem; color: var(--muted); line-height: 1.7; }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .tag { background: rgba(6,182,212,0.06); border: 1px solid rgba(6,182,212,0.15); border-radius: 6px; padding: 3px 10px; font-size: 0.72rem; color: var(--accent); }
+  </style>
+</head>
+
+<body>
+<div class="wrapper">
+
+  <header style="margin-bottom:24px;">
+    <div class="brand-tag">🗓️ AnkitStudyPoint · Pharmacy Tools</div>
+    <h1>Medicine Expiry Date Checker</h1>
+    <p class="subtitle">Check if your medicine is expired, see days remaining, or calculate expiry date from manufacturing date and shelf life. Free tool for D.Pharmacy students.</p>
+  </header>
+
+  <!-- TABS -->
+  <div class="tab-row">
+    <button class="tab-btn active" id="tab1" onclick="switchTab(1)">📅 Check Expiry Date</button>
+    <button class="tab-btn" id="tab2" onclick="switchTab(2)">🔢 Find from Mfg. Date</button>
+  </div>
+
+  <!-- CALCULATOR CARD -->
+  <div class="calc-card">
+
+    <!-- PANEL 1: Direct expiry check -->
+    <div class="panel active" id="panel1">
+      <div class="input-group">
+        <label>💊 Medicine / Drug Name (Optional)</label>
+        <div class="input-row">
+          <input type="text" id="drug-name" placeholder="e.g. Paracetamol 500mg" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:13px 14px;color:var(--text);font-size:0.95rem;font-family:'DM Sans',sans-serif;outline:none;" />
+        </div>
+      </div>
+      <div class="input-group">
+        <label>📅 Expiry Date on Package</label>
+        <div class="input-row">
+          <input type="month" id="expiry-date" />
+        </div>
+      </div>
+      <div class="error-box" id="err1">⚠️ Please select the expiry date.</div>
+      <button class="calc-btn" onclick="checkExpiry()">🔍 Check Expiry Status</button>
+    </div>
+
+    <!-- PANEL 2: Calculate from mfg date -->
+    <div class="panel" id="panel2">
+      <div class="input-group">
+        <label>🏭 Manufacturing Date</label>
+        <div class="input-row">
+          <input type="month" id="mfg-date" />
+        </div>
+      </div>
+      <div class="input-group">
+        <label>⏳ Shelf Life</label>
+        <div class="input-row">
+          <input type="number" id="shelf-life" placeholder="e.g. 24" min="1" max="120" />
+          <div class="unit-badge">Months</div>
+        </div>
+      </div>
+      <div class="error-box" id="err2">⚠️ Please fill all fields correctly.</div>
+      <button class="calc-btn" onclick="calcFromMfg()">📅 Calculate Expiry Date</button>
+    </div>
+
+  </div>
+
+  <!-- RESULT -->
+  <div id="result">
+    <div class="status-card" id="status-card">
+      <span class="status-emoji" id="status-emoji">✅</span>
+      <div class="status-text" id="status-text">Valid</div>
+      <div class="status-days" id="status-days"></div>
+      <div class="info-grid" id="info-grid"></div>
+      <div class="advice-box" id="advice-box"></div>
+    </div>
+    <button class="reset-btn" onclick="resetCalc()">🔄 Check Another</button>
+  </div>
+
+  <!-- INTERNAL LINKS -->
+  <nav class="internal-links">
+    <h2>🔗 More Free Pharmacy Tools</h2>
+    <div class="links-grid">
+      <a class="link-card" href="https://ankitstudypoint.blogspot.com/p/bmi-calculator.html" target="_blank"><span>⚖️</span> BMI Calculator</a>
+      <a class="link-card" href="https://ankitstudypoint.blogspot.com/p/drug-dose-calculator.html" target="_blank"><span>💉</span> Drug Dose Calculator</a>
+      <a class="link-card" href="https://ankitstudypoint.blogspot.com/p/medical-abbreviation-finder-tool.html" target="_blank"><span>🔤</span> Abbreviation Finder</a>
+      <a class="link-card" href="https://ankitstudypoint.blogspot.com/p/free-ai-pharmacy-notes-generator.html" target="_blank"><span>🤖</span> Pharmacy Notes AI</a>
+      <a class="link-card" href="https://ankitstudypoint.blogspot.com/2026/03/pharma-smart-converter-tool.html.html" target="_blank"><span>🔄</span> Unit Converter</a>
+      <a class="link-card" href="https://ankitstudypoint.blogspot.com/" target="_blank"><span>🏠</span> AnkitStudyPoint</a>
+    </div>
+  </nav>
+
+  <!-- SEO TEXT -->
+  <article class="seo-text">
+    <h2>About Medicine Expiry Date Checker</h2>
+    <p>This free <strong>Medicine Expiry Date Checker</strong> helps patients, students, and pharmacists quickly determine if a medicine is still safe to use. Simply enter the expiry date printed on the package and get instant results.</p>
+
+    <h3>How to Read Medicine Expiry Date?</h3>
+    <p>Most medicines show expiry as <strong>MM/YYYY</strong> (e.g., 06/2026). A medicine is valid through the <strong>last day of the expiry month</strong>. So "06/2026" means valid until June 30, 2026.</p>
+
+    <h3>What is Shelf Life?</h3>
+    <p>Shelf life is the period during which a medicine remains safe and effective when stored properly. In India, most tablet and capsule formulations have a shelf life of <strong>24–36 months</strong> from manufacturing date.</p>
+
+    <h3>Important for D.Pharmacy Students</h3>
+    <p>Expiry date and shelf life calculations are part of <strong>Pharmaceutics syllabus</strong> and are commonly asked in <strong>D.Pharmacy practicals, viva, and Government Pharmacist competitive exams</strong>.</p>
+
+    <div class="tag-list">
+      <span class="tag">Expiry Date Checker</span>
+      <span class="tag">Medicine Expired?</span>
+      <span class="tag">Shelf Life</span>
+      <span class="tag">D.Pharmacy</span>
+      <span class="tag">Drug Expiry</span>
+      <span class="tag">AnkitStudyPoint</span>
+      <span class="tag">Pharmacy Tool</span>
+    </div>
+  </article>
+
+</div>
+
+<script>
+  function switchTab(n) {
+    [1,2].forEach(i => {
+      document.getElementById('tab'+i).classList.toggle('active', i === n);
+      document.getElementById('panel'+i).classList.toggle('active', i === n);
+    });
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('err1').style.display = 'none';
+    document.getElementById('err2').style.display = 'none';
+  }
+
+  function showResult(statusClass, emoji, statusText, daysText, infoItems, advice) {
+    const card = document.getElementById('status-card');
+    card.className = 'status-card ' + statusClass;
+    document.getElementById('status-emoji').textContent = emoji;
+    document.getElementById('status-text').textContent = statusText;
+    document.getElementById('status-days').innerHTML = daysText;
+    document.getElementById('info-grid').innerHTML = infoItems.map(item =>
+      '<div class="info-item"><div class="info-label">' + item.label + '</div><div class="info-value">' + item.value + '</div></div>'
+    ).join('');
+    const advBox = document.getElementById('advice-box');
+    advBox.className = 'advice-box ' + statusClass;
+    advBox.textContent = advice;
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function checkExpiry() {
+    const expiryInput = document.getElementById('expiry-date').value;
+    const drugName = document.getElementById('drug-name').value.trim() || 'Medicine';
+    const errEl = document.getElementById('err1');
+    errEl.style.display = 'none';
+
+    if (!expiryInput) { errEl.style.display = 'block'; return; }
+
+    const [year, month] = expiryInput.split('-').map(Number);
+    // Medicine valid through last day of expiry month
+    const expiryDate = new Date(year, month, 0); // last day of that month
+    const today = new Date();
+    today.setHours(0,0,0,0);
+
+    const diffMs = expiryDate - today;
+    const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+    const expiryStr = expiryDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const expiryLabel = months[month-1] + ' ' + year;
+
+    const infoItems = [
+      { label: 'Medicine', value: drugName },
+      { label: 'Expiry Date', value: expiryLabel },
+      { label: 'Last Valid Day', value: expiryStr },
+      { label: 'Checked On', value: today.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) }
+    ];
+
+    if (diffDays < 0) {
+      showResult('expired', '❌', 'EXPIRED!',
+        'Expired <strong>' + Math.abs(diffDays) + ' days ago</strong>',
+        infoItems,
+        '🚫 Do NOT use this medicine. It may be less effective or harmful. Dispose of safely — never flush medicines down the drain. Return to a pharmacy for proper disposal.');
+    } else if (diffDays <= 30) {
+      showResult('warning', '⚠️', 'Expiring Soon!',
+        'Expires in <strong>' + diffDays + ' days</strong>',
+        infoItems,
+        '⚠️ This medicine expires very soon. Use it before ' + expiryStr + ' or consult your pharmacist. Do not purchase if buying new stock.');
+    } else {
+      showResult('safe', '✅', 'Valid & Safe',
+        'Expires in <strong>' + diffDays + ' days</strong> (' + Math.floor(diffDays/30) + ' months)',
+        infoItems,
+        '✅ This medicine is within its expiry date and safe to use as prescribed. Store as directed on the label (cool, dry place away from sunlight).');
+    }
+  }
+
+  function calcFromMfg() {
+    const mfgInput = document.getElementById('mfg-date').value;
+    const shelfLife = parseInt(document.getElementById('shelf-life').value);
+    const errEl = document.getElementById('err2');
+    errEl.style.display = 'none';
+
+    if (!mfgInput || !shelfLife || shelfLife < 1) { errEl.style.display = 'block'; return; }
+
+    const [mYear, mMonth] = mfgInput.split('-').map(Number);
+    const mfgDate = new Date(mYear, mMonth - 1, 1);
+
+    const expiryMonth = mMonth - 1 + shelfLife;
+    const expiryYear = mYear + Math.floor(expiryMonth / 12);
+    const expiryMonthFinal = expiryMonth % 12;
+    const expiryDate = new Date(expiryYear, expiryMonthFinal, 0);
+
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const diffDays = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const mfgLabel = months[mMonth-1] + ' ' + mYear;
+    const expiryLabel = months[expiryMonthFinal === 0 ? 11 : expiryMonthFinal - 1] + ' ' + expiryYear;
+    const expiryStr = expiryDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    const infoItems = [
+      { label: 'Manufacturing Date', value: mfgLabel },
+      { label: 'Shelf Life', value: shelfLife + ' months' },
+      { label: 'Expiry Date', value: expiryLabel },
+      { label: 'Last Valid Day', value: expiryStr }
+    ];
+
+    if (diffDays < 0) {
+      showResult('expired', '❌', 'EXPIRED!',
+        'Expired <strong>' + Math.abs(diffDays) + ' days ago</strong>',
+        infoItems ,
+        '🚫 Based on the manufacturing date and shelf life, this medicine is expired. Do not use.');
+    } else if (diffDays <= 30) {
+      showResult('warning', '⚠️', 'Expiring Soon!',
+        'Expires in <strong>' + diffDays + ' days</strong>',
+        infoItems,
+        '⚠️ Expiring within 30 days. Use promptly or consult a pharmacist.');
+    } else {
+      showResult('safe', '✅', 'Valid & Safe',
+        'Expires in <strong>' + diffDays + ' days</strong>',
+        infoItems,
+        '✅ Medicine is within shelf life. Calculated expiry: ' + expiryStr + '. Store properly as per label instructions.');
+    }
+  }
+}
+
+function resetCalc() {
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('expiry-date').value = '';
+  document.getElementById('mfg-date').value = '';
+  document.getElementById('shelf-life').value = '';
+  document.getElementById('drug-name').value = '';
+}
+</script>
+</body>
+</html>
